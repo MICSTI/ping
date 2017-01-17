@@ -32,3 +32,5 @@ Small node.js application to monitor web apps
     "password": "a very secret password"
 }
 ```
+- if request was succesful, the response should be a 201 Created
+- if it was not successful, the error message in the body should tell you what went wrong.
