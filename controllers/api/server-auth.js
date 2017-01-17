@@ -53,7 +53,6 @@ router.post('/user', function(req, res, next) {
 
     var username = req.body.username;
     var email = req.body.email;
-    var color = req.body.color;
     var password = req.body.password;
 
     if (!username) {
@@ -67,13 +66,6 @@ router.post('/user', function(req, res, next) {
         error = new Error();
         error.status = 400;
         error.message = 'Missing parameter email';
-        return next(error);
-    }
-
-    if (!color) {
-        error = new Error();
-        error.status = 400;
-        error.message = 'Missing parameter color';
         return next(error);
     }
 
@@ -121,8 +113,7 @@ router.post('/user', function(req, res, next) {
             // create new user
             var user = new User({
                 username: username,
-                email: email,
-                color: color
+                email: email
             });
 
             // generate salt and hash for password and save it to the user object
@@ -138,14 +129,13 @@ router.post('/user', function(req, res, next) {
 });
 
 /**
- * Route for basic user update (username, email and color).
+ * Route for basic user update (username and email).
  */
 router.put('/user/basic', protectRoute, function(req, res, next) {
     var error;
 
     var username = req.body.username;
     var email = req.body.email;
-    var color = req.body.color;
 
     if (!username) {
         error = new Error();
@@ -158,13 +148,6 @@ router.put('/user/basic', protectRoute, function(req, res, next) {
         error = new Error();
         error.status = 400;
         error.message = 'Missing parameter email';
-        return next(error);
-    }
-
-    if (!color) {
-        error = new Error();
-        error.status = 400;
-        error.message = 'Missing parameter color';
         return next(error);
     }
 
