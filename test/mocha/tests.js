@@ -11,6 +11,6 @@ chai.use(chaiHttp);
 // dummy test
 describe('dummy test', function() {
     it('should be able to calculate', function() {
-        expect(42).to.equal(42);
+        expect(40 + 2).to.equal(42);
     });
 });
