@@ -15,7 +15,7 @@ Small node.js application to monitor web apps
 # Start app
 - npm install
 - npm start
-- visit http://localhost:4242
+- visit <http://localhost:4242>
 
 # Start app in development mode
 - make sure development assets are installed
