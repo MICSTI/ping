@@ -26,14 +26,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(authentication);
 
 // favicon
-//app.use(favicon(__dirname + '/assets/favicon.ico'));
+app.use(favicon(__dirname + '/assets/favicon.ico'));
 
 // routes ====================================
 app.use('/api', require('./controllers/api/server-auth.js'));
 app.use('/api/password', require('./controllers/api/password.js'));
 
 // set the static files location
-//app.use(express.static(__dirname + "/public"));
+app.use("/public", express.static("public"));
 app.use("/build", express.static("build"));
 
 // server routes ================================================
