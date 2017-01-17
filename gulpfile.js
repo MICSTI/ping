@@ -12,7 +12,7 @@ var sourcemaps = require("gulp-sourcemaps");
 
 // minify new or changed HTML pages
 gulp.task("htmlpage", function() {
-    var htmlSrc = "./public/views/**/*.html";
+    var htmlSrc = "./frontend/views/**/*.html";
     var htmlDst = "./build/views";
 
     gulp.src(htmlSrc)
@@ -23,9 +23,9 @@ gulp.task("htmlpage", function() {
 
 // JS concat and minify
 gulp.task("scripts", function() {
-   gulp.src(["./public/js/**/*.js", "./lib/**/*.js"])
+   gulp.src(["./lib/**/*.js", "./frontend/js/**/*.js"])
        .pipe(sourcemaps.init())
-            .pipe(concat("script.js"))
+            .pipe(concat("scripts.js"))
             .pipe(uglify().on('error', gutil.log))
        .pipe(sourcemaps.write())
        .pipe(gulp.dest("./build/scripts/"));
@@ -33,7 +33,7 @@ gulp.task("scripts", function() {
 
 // SASS compilation and minify
 gulp.task("styles", function() {
-   gulp.src(["./public/sass/**/*.scss"])
+   gulp.src(["./frontend/sass/**/*.scss"])
        .pipe(concat('styles.scss'))
        .pipe(sass().on('error', sass.logError))
        .pipe(cleanCss())
@@ -47,11 +47,11 @@ gulp.task("default", ["htmlpage", "scripts", "styles"], function() {
     var css = ["styles"];
 
     // watch for HTML changes
-    gulp.watch("./public/views/**/*.html", html);
+    gulp.watch("./frontend/views/**/*.html", html);
 
     // watch for JS changes
-    gulp.watch("./public/js/**/*.js", js);
+    gulp.watch("./frontend/js/**/*.js", js);
 
     // watch for SCSS changes
-    gulp.watch("./public/sass/**/*.scss", css);
+    gulp.watch("./frontend/sass/**/*.scss", css);
 });
