@@ -4,6 +4,14 @@
 var app = new Vue({
     el: '#app',
     data: {
-        message: 'Hello Vue!'
+        sites: [{
+            name: "evoCall Production",
+            description: "The best industry 4.0 solution in the world",
+            url: "https://evogeneral.evolaris.net:8765"
+        }, {
+            name: "evoCall Development",
+            description: "The best industry 4.0 solution in the world (in development mode)",
+            url: "https://evogeneral.evolaris.net:8766"
+        }]
     }
 });

@@ -33,7 +33,7 @@ gulp.task("scripts", function() {
 
 // SASS compilation and minify
 gulp.task("styles", function() {
-   gulp.src(["./frontend/sass/**/*.scss"])
+   gulp.src(["./lib/**/*.css", "./frontend/sass/**/*.scss"])
        .pipe(concat('styles.scss'))
        .pipe(sass().on('error', sass.logError))
        .pipe(cleanCss())

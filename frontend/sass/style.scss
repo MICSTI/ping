@@ -1,5 +1,7 @@
-$bg_primary: #fff;
+$bg_primary: #dadfe1;
 $text_primary: #222;
+
+$ping: #26a65b;
 
 body {
   background-color: $bg_primary;
@@ -16,4 +18,41 @@ header {
 
 header img {
   margin: 1em;
+}
+
+@media screen and (max-width: 600px) {
+  .content {
+    width: 90%;
+    margin-left: 5%;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .content {
+    width: 80%;
+    margin-left: 10%;
+  }
+}
+
+@media screen and (min-width: 801px) {
+  .content {
+    width: 70%;
+    margin-left: 15%;
+  }
+}
+
+.section-title {
+  color: $ping;
+}
+
+.sites-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-element {
+  border-top: 1px solid #bbb;
+  padding-top: 0.7em;
+  padding-bottom: 0.3em;
 }
