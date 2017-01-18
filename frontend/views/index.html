@@ -83,7 +83,7 @@
                     <div class="modal-title">{{modal.title}}</div>
                 </div>
                 <div class="modal-body">
-                    <div class="content">{{modal.content}}</div>
+                    <div class="content" v-html="modal.content"></div>
                 </div>
                 <div class="modal-footer" v-if="modal.buttons.length > 0">
                     <button v-for="button in modal.buttons" v-bind:class="button.class" v-on:click="(typeof button.action === 'function') && button.action()">{{button.display}}</button>

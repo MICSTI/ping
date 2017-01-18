@@ -61,6 +61,18 @@ new Vue({
         closeModal: function() {
             Vue.set(this.modal, 'visible', false);
         },
+        // puts the focus to an input element, after a defined amount of time
+        focusStaggered: function(id, stagger) {
+            stagger = stagger !== undefined ? stagger : 180;
+
+            setTimeout(function() {
+                var element = document.getElementById(id);
+
+                if (element !== null) {
+                    element.focus();
+                }
+            }, stagger);
+        },
         isActive: function(state) {
             return this.activeMenu === state;
         },
@@ -82,7 +94,16 @@ new Vue({
 
             this.showModal({
                 title: 'Log in',
-                content: 'Please provide all your details',
+                content:    '<form>' +
+                                '<div class="form-group">' +
+                                    '<label class="form-label" for="username">Username</label>' +
+                                    '<input class="form-input" type="text" id="username" placeholder="Username" />' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label class="form-label" for="password">Password</label>' +
+                                    '<input class="form-input" type="password" id="password" placeholder="Password" />' +
+                                '</div>' +
+                            '</form>',
                 buttons: [
                     {
                         class: 'btn',
@@ -95,12 +116,14 @@ new Vue({
                         action: function() {
                             self.closeModal();
 
+                            // TODO replace with real API call
                             self.auth = {
                                 username: "Michael Stifter"
                             }
                         }
                     }
-                ]
+                ],
+                focus: 'username'
             });
         },
         // sets the modal content and displays it
@@ -109,6 +132,12 @@ new Vue({
             Vue.set(this.modal, 'content', opts.content || "");
             Vue.set(this.modal, 'buttons', opts.buttons || [{ class: 'btn btn-primary', display: 'Ok', action: this.closeModal }]);
             Vue.set(this.modal, 'visible', true);
+
+            if (opts.focus !== undefined) {
+                // we wrap the focusing around a timeout, because the element does not exist immediately.
+                // maybe there is a more elegant solution?
+                this.focusStaggered(opts.focus, 180);
+            }
         },
         // gets the sites from the API and puts them in the sites array
         updateSites: function() {

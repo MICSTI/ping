@@ -101,6 +101,11 @@ nav ul {
   background-color: darken($ping, 10%);
 }
 
+.modal-title {
+  font-weight: bold;
+  font-size: 2rem !important;
+}
+
 .modal-footer button {
   margin: 0.2em 0.6em;
 }
