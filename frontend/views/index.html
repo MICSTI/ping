@@ -23,10 +23,17 @@
             <ul>
                 <li v-bind:class="{ active: isActive('sites') }" v-on:click="setActive('sites')">Sites</li>
                 <li v-bind:class="{ active: isActive('users') }" v-on:click="setActive('users')">Users</li>
-                <span class="float-right">
-                    <li v-if="auth === null" v-on:click="showLoginModal()" class="float-right">Log in</li>
-                    <li v-else class="login-username">{{auth.username}}</li>
-                </span>
+
+                <li v-if="auth === null" v-on:click="showLoginModal()" class="float-right">Log in</li>
+                <div v-else class="float-right dropdown">
+                    <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">{{auth.username}} <i class="icon-caret"></i></a>
+                    <ul class="menu">
+                      <li class="menu-item">
+                          <a href="#" v-on:click="logout()">Log out</a>
+                      </li>
+                  </ul>
+                    <!--<li v-else class="login-username"></li>-->
+                </div>
             </ul>
         </nav>
 
