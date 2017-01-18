@@ -77,13 +77,13 @@ nav ul {
   color: $ping;
 }
 
-.sites-list {
+.sites-list, .users-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-.site-element {
+.site-element, .user-element {
   border-top: 1px solid #bbb;
   padding-top: 0.7em;
   padding-bottom: 0.3em;

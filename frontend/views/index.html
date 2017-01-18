@@ -23,11 +23,13 @@
             <ul>
                 <li v-bind:class="{ active: isActive('sites') }" v-on:click="setActive('sites')">Sites</li>
                 <li v-bind:class="{ active: isActive('users') }" v-on:click="setActive('users')">Users</li>
+                <li class="float-right">Log in</li>
             </ul>
         </nav>
 
         <section class="content">
             <section class="sites-container col-12" v-if="isActive('sites')">
+                <div class="float-right"><button class="btn btn-primary" v-on:click="updateSites">Refresh</button></div>
                 <div class="section-title"><h4>Sites</h4></div>
                 <div class="section-content">
                     <div v-if="!sitesLoading">
@@ -45,11 +47,12 @@
             </section>
 
             <section class="sites-container col-12" v-if="isActive('users')">
+                <div class="float-right"><button class="btn btn-primary" v-on:click="updateUsers">Refresh</button></div>
                 <div class="section-title"><h4>Users</h4></div>
                 <div class="section-content">
                     <div v-if="!usersLoading">
                         <ul v-if="users.length > 0" class="users-list">
-
+                            <user-item v-for="user in users" v-bind:user="user"></user-item>
                         </ul>
                         <div v-else>
                             There are no users created yet.

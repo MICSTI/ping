@@ -32,6 +32,7 @@ app.use(favicon(__dirname + '/assets/favicon.ico'));
 app.use('/api', require('./controllers/api/server-auth.js'));
 app.use('/api/password', require('./controllers/api/password.js'));
 app.use('/api/sites', require('./controllers/api/sites.js'));
+app.use('/api/users', require('./controllers/api/users.js'));
 
 // set the static files location
 app.use("/public", express.static("public"));

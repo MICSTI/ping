@@ -15,11 +15,21 @@ Vue.component('site-item', {
             '</li>'
 });
 
+Vue.component('user-item', {
+    props: ['user'],
+    template: '<li class="user-element">' +
+                '<div class="text-bold">{{user.username}}</div>' +
+            '</li>'
+});
+
 var app = new Vue({
     el: '#app',
     data: {
         // active menu
         activeMenu: 'sites',
+
+        // log in info
+        auth: null,
 
         // all sites that are being monitored by the application
         sites: [],
@@ -35,11 +45,19 @@ var app = new Vue({
     },
     // on created event handler
     created: function() {
+        // upon load, init sites and users
         this.updateSites();
+        this.updateUsers();
     },
     methods: {
         isActive: function(state) {
             return this.activeMenu === state;
+        },
+        login: function(auth) {
+            this.auth = auth;
+        },
+        logout: function() {
+            this.auth = null;
         },
         setActive: function(state) {
             this.activeMenu = state;
@@ -54,6 +72,21 @@ var app = new Vue({
                 .then(function(response) {
                     self.sites = response.data;
                     self.sitesLoading = false;
+                })
+                .catch(function(err) {
+                    console.error(err);
+                });
+        },
+        // gets the users from the API and puts them in the users array
+        updateUsers: function() {
+            var self = this;
+
+            self.usersLoading = true;
+
+            axios.get('/api/users')
+                .then(function(response) {
+                    self.users = response.data;
+                    self.usersLoading = false;
                 })
                 .catch(function(err) {
                     console.error(err);
