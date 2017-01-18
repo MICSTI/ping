@@ -15,16 +15,19 @@
 </head>
 <body>
     <header>
-        <img src="/public/img/ping-logo.png" width="99" height="90" />
+        <img src="/public/img/ping-logo.png" width="99" height="90"  />
     </header>
 
-    <section id="app">
+    <section class="root" id="app">
         <nav>
-
+            <ul>
+                <li v-bind:class="{ active: isActive('sites') }" v-on:click="setActive('sites')">Sites</li>
+                <li v-bind:class="{ active: isActive('users') }" v-on:click="setActive('users')">Users</li>
+            </ul>
         </nav>
 
         <section class="content">
-            <section class="sites-container col-12">
+            <section class="sites-container col-12" v-if="isActive('sites')">
                 <div class="section-title"><h4>Sites</h4></div>
                 <div class="section-content">
                     <div v-if="!sitesLoading">
@@ -33,6 +36,23 @@
                         </ul>
                         <div v-else>
                             There are no sites created yet.
+                        </div>
+                    </div>
+                    <div v-else class="center">
+                        <button class="btn btn-link loading"></button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sites-container col-12" v-if="isActive('users')">
+                <div class="section-title"><h4>Users</h4></div>
+                <div class="section-content">
+                    <div v-if="!usersLoading">
+                        <ul v-if="users.length > 0" class="users-list">
+
+                        </ul>
+                        <div v-else>
+                            There are no users created yet.
                         </div>
                     </div>
                     <div v-else class="center">

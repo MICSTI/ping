@@ -12,11 +12,18 @@ router.get('/', function(req, res, next) {
     res.status(200).json([{
         name: "evoCall Production",
         description: "The best industry 4.0 solution in the world",
-        url: "https://evogeneral.evolaris.net:8765"
+        url: "https://evogeneral.evolaris.net:8765",
+        listeners: [
+            { username: "Michael Stifter" },
+            { username: "Markus Streibl" }
+        ]
     }, {
         name: "evoCall Development",
         description: "The best industry 4.0 solution in the world (in development mode)",
-        url: "https://evogeneral.evolaris.net:8766"
+        url: "https://evogeneral.evolaris.net:8766",
+        listeners: [
+            { username: "Michael Stifter" }
+        ]
     }]);
 });
 
