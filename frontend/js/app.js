@@ -31,6 +31,14 @@ var app = new Vue({
         // log in info
         auth: null,
 
+        // modal
+        modal: {
+            title: "Modal title",
+            content: "Modal content",
+            buttons: [],
+            visible: false
+        },
+
         // all sites that are being monitored by the application
         sites: [],
 
@@ -50,8 +58,14 @@ var app = new Vue({
         this.updateUsers();
     },
     methods: {
+        closeModal: function() {
+            Vue.set(this.modal, 'visible', false);
+        },
         isActive: function(state) {
             return this.activeMenu === state;
+        },
+        isModalVisible: function() {
+            return this.modal.visible;
         },
         login: function(auth) {
             this.auth = auth;
@@ -61,6 +75,20 @@ var app = new Vue({
         },
         setActive: function(state) {
             this.activeMenu = state;
+        },
+        // displays the login modal
+        showLoginModal: function() {
+            this.showModal({
+                title: 'Log in',
+                content: 'Please provide all your details'
+            });
+        },
+        // sets the modal content and displays it
+        showModal: function(opts) {
+            Vue.set(this.modal, 'title', opts.title || "");
+            Vue.set(this.modal, 'content', opts.content || "");
+            Vue.set(this.modal, 'buttons', opts.buttons || [{ class: 'btn btn-primary', display: 'Ok', action: this.closeModal }]);
+            Vue.set(this.modal, 'visible', true);
         },
         // gets the sites from the API and puts them in the sites array
         updateSites: function() {
