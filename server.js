@@ -31,14 +31,21 @@ app.use(favicon(__dirname + '/assets/favicon.ico'));
 // routes ====================================
 app.use('/api', require('./controllers/api/server-auth.js'));
 app.use('/api/password', require('./controllers/api/password.js'));
+app.use('/api/sites', require('./controllers/api/sites.js'));
 
 // set the static files location
 app.use("/public", express.static("public"));
 app.use("/build", express.static("build"));
 
 // server routes ================================================
-app.get("*", function(req, res) {
+// index
+app.get("/", function(req, res) {
     res.sendFile(path.resolve('build/views/index.html'));
+});
+
+// 404
+app.get("*", function(req, res) {
+    res.status(404).send("This is not an allowed URL");
 });
 
 // error handler ====================================

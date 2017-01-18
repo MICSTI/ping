@@ -27,13 +27,17 @@
             <section class="sites-container col-12">
                 <div class="section-title"><h4>Sites</h4></div>
                 <div class="section-content">
-                    <ul class="sites-list">
-                        <li v-for="site in sites" class="site-element">
-                            <div class="text-bold">{{site.name}}</div>
-                            <div>{{site.description}}</div>
-                            <div><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>
-                        </li>
-                    </ul>
+                    <div v-if="!sitesLoading">
+                        <ul v-if="sites.length > 0" class="sites-list">
+                            <site-item v-for="site in sites" v-bind:site="site"></site-item>
+                        </ul>
+                        <div v-else>
+                            There are no sites created yet.
+                        </div>
+                    </div>
+                    <div v-else class="center">
+                        <button class="btn btn-link loading"></button>
+                    </div>
                 </div>
             </section>
         </section>
