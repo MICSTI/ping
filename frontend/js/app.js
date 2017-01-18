@@ -78,9 +78,29 @@ new Vue({
         },
         // displays the login modal
         showLoginModal: function() {
+            var self = this;
+
             this.showModal({
                 title: 'Log in',
-                content: 'Please provide all your details'
+                content: 'Please provide all your details',
+                buttons: [
+                    {
+                        class: 'btn',
+                        display: 'Cancel',
+                        action: self.closeModal
+                    },
+                    {
+                        class: 'btn btn-primary',
+                        display: 'Login',
+                        action: function() {
+                            self.closeModal();
+
+                            self.auth = {
+                                username: "Michael Stifter"
+                            }
+                        }
+                    }
+                ]
             });
         },
         // sets the modal content and displays it

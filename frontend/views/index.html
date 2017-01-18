@@ -23,7 +23,10 @@
             <ul>
                 <li v-bind:class="{ active: isActive('sites') }" v-on:click="setActive('sites')">Sites</li>
                 <li v-bind:class="{ active: isActive('users') }" v-on:click="setActive('users')">Users</li>
-                <li v-on:click="showLoginModal()" class="float-right">Log in</li>
+                <span class="float-right">
+                    <li v-if="auth === null" v-on:click="showLoginModal()" class="float-right">Log in</li>
+                    <li v-else class="login-username">{{auth.username}}</li>
+                </span>
             </ul>
         </nav>
 
@@ -76,7 +79,7 @@
                     <div class="content">{{modal.content}}</div>
                 </div>
                 <div class="modal-footer" v-if="modal.buttons.length > 0">
-                    <button v-for="button in modal.buttons" v-bind:class="button.class" v-on:click="button.action()">{{button.display}}</button>
+                    <button v-for="button in modal.buttons" v-bind:class="button.class" v-on:click="(typeof button.action === 'function') && button.action()">{{button.display}}</button>
                 </div>
             </div>
         </section>
