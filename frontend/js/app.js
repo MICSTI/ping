@@ -22,7 +22,7 @@ Vue.component('user-item', {
             '</li>'
 });
 
-var app = new Vue({
+new Vue({
     el: '#app',
     data: {
         // active menu
