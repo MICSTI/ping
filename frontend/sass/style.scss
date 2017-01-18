@@ -41,7 +41,7 @@ nav ul {
       background-color: lighten($ping, 3%);
     }
 
-    &:not(.active):hover {
+    &:not(.active):not(.menu-item):hover {
       background-color: darken($ping, 3%);
       cursor: pointer;
     }
@@ -99,4 +99,8 @@ nav ul {
 
 .login-username {
   background-color: darken($ping, 10%);
+}
+
+.modal-footer button {
+  margin: 0.2em 0.6em;
 }

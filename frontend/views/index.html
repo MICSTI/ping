@@ -26,7 +26,7 @@
 
                 <li v-if="auth === null" v-on:click="showLoginModal()" class="float-right">Log in</li>
                 <div v-else class="float-right dropdown">
-                    <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">{{auth.username}} <i class="icon-caret"></i></a>
+                    <li href="#" class="dropdown-toggle" tabindex="0">{{auth.username}} <i class="icon-caret"></i></li>
                     <ul class="menu">
                       <li class="menu-item">
                           <a href="#" v-on:click="logout()">Log out</a>
