@@ -94,4 +94,14 @@ describe('ping', function() {
         expect(ping.result({ range: { higher: 43 } }, 45)).to.be.false;
         expect(ping.result({ range: { lower: 41, higher: 43 } }, 40)).to.be.false;
     });
+
+    it('correctly matches a regex', function() {
+        expect(ping.result({ regex: "^[0-9]+\\.[0-9]+\\.[0-9]+$" }, "1.2.0")).to.be.true;
+        expect(ping.result({ type: "String", regex: "^[0-9]+\\.[0-9]+\\.[0-9]+$" }, "1.2.0")).to.be.true;
+    });
+
+    it('correctly rejects an invalid regex', function() {
+        expect(ping.result({ regex: "i am not cool" }, "1.2.0")).to.be.false;
+        expect(ping.result.bind(undefined, { type: 'Number', regex: "^[0-9]+" }, "1.2.0")).to.throw(Error);
+    });
 });

@@ -29,6 +29,20 @@ Ping.prototype.checkRange = function(range, value) {
     }
 };
 
+Ping.prototype.checkRegex = function(regexString, value) {
+    var regex;
+
+    try {
+        regex = new RegExp(regexString, 'i');
+    } catch (e) {
+        return false;
+    }
+
+    var matches = value.match(regex);
+
+    return matches !== null && matches.length > 0;
+};
+
 Ping.prototype.result = function(opts, value) {
     if (typeof opts === 'undefined') {
         throw new Error("Missing options parameter");
@@ -58,11 +72,22 @@ Ping.prototype.result = function(opts, value) {
         resultArray.push(this.checkRange(range, value));
     }
 
+    // ------- REGEX -------
+    var regex = opts.regex || null;
+
+    if (regex !== null) {
+        if (type === null || (type !== null && type.toLocaleLowerCase() === 'string')) {
+            resultArray.push(this.checkRegex(regex, value));
+        } else {
+            throw new Error("When using regex the type property must be set to String");
+        }
+    }
+
     // ------- FINAL CHECK -------
     // check for 'false' values in result array
     var numberOfFalses = resultArray.filter(function(r) {
         return r === false;
-    }).length
+    }).length;
 
     // return final true or false
     return numberOfFalses === 0;
