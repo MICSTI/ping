@@ -33,6 +33,9 @@ var Site = db.model('Site', {
     },
     maintime: {
         type: Object
+    },
+    config: {
+        type: Object
     }
 });
 
