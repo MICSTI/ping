@@ -9,6 +9,7 @@ var Site = require('../../models/site');
  */
 router.get('/', function(req, res, next) {
     Site.find({})
+        .populate('notify')
         .exec(function(err, sites) {
             if (err) {
                 var error = new Error();

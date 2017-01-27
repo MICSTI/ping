@@ -7,8 +7,8 @@ Vue.component('site-item', {
                 '<div class="text-bold">{{site.name}}</div>' +
                 '<div>{{site.description}}</div>' +
                 '<div><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
-                '<div class="listeners-container" v-if="site.listeners && site.listeners.length > 0">' +
-                    '<div class="site-listener chip-sm" v-for="user in site.listeners">' +
+                '<div class="listeners-container" v-if="site.notify && site.notify.length > 0">' +
+                    '<div class="site-listener chip-sm" v-for="user in site.notify">' +
                         '<div class="chip-name">{{user.username}}</div>' +
                     '</div>' +
                 '</div>' +
