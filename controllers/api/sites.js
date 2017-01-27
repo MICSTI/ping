@@ -5,8 +5,7 @@ var protectRoute = require('../protect');
 var Site = require('../../models/site');
 
 /**
- * Returns the high score list for the quiz.
- * Contains the overall score considering all users.
+ * Returns all sites in the database.
  */
 router.get('/', function(req, res, next) {
     res.status(200).json([{
@@ -25,6 +24,18 @@ router.get('/', function(req, res, next) {
             { username: "Michael Stifter" }
         ]
     }]);
+});
+
+router.post('/', protectRoute, function(req, res, next) {
+    var site = new Site(req.body);
+
+    site.save(function(err) {
+        if (err) {
+            return next(err);
+        }
+
+        res.status(201).json(site);
+    });
 });
 
 module.exports = router;
