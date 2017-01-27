@@ -31,7 +31,11 @@ router.post('/', protectRoute, function(req, res, next) {
 
     site.save(function(err) {
         if (err) {
-            return next(err);
+            var error = new Error();
+            error.status = 400;
+            error.message = err.message;
+
+            return next(error);
         }
 
         res.status(201).json(site);

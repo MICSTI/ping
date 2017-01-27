@@ -4,11 +4,10 @@ var Schema = db.Schema;
 var Site = db.model('Site', {
     name: {
         type: String,
-        required: true
+        required: "A name for the site is required"
     },
     url: {
-        type: String,
-        required: true
+        type: String
     },
     description: {
         type: String
