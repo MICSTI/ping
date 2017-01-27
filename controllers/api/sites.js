@@ -8,22 +8,18 @@ var Site = require('../../models/site');
  * Returns all sites in the database.
  */
 router.get('/', function(req, res, next) {
-    res.status(200).json([{
-        name: "evoCall Production",
-        description: "The best industry 4.0 solution in the world",
-        url: "https://evogeneral.evolaris.net:8765",
-        listeners: [
-            { username: "Michael Stifter" },
-            { username: "Markus Streibl" }
-        ]
-    }, {
-        name: "evoCall Development",
-        description: "The best industry 4.0 solution in the world (in development mode)",
-        url: "https://evogeneral.evolaris.net:8766",
-        listeners: [
-            { username: "Michael Stifter" }
-        ]
-    }]);
+    Site.find({})
+        .exec(function(err, sites) {
+            if (err) {
+                var error = new Error();
+                error.status = 400;
+                error.message = err.message;
+
+                return next(error);
+            }
+
+            res.status(200).json(sites);
+        });
 });
 
 router.post('/', protectRoute, function(req, res, next) {
