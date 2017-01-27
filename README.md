@@ -53,6 +53,9 @@ Small node.js application to monitor web apps
 		"url": "https://westworld.com/api/version",
 		"method": "GET",
 		"body": null,
+		"headers": {
+		    "X-Auth": "JWT_TOKEN"
+		},
 		"settings": {
 			"intervalInMinutes": 1,
 			"notifyAfterXFailures": 1,
@@ -76,6 +79,10 @@ Small node.js application to monitor web apps
 					},
 					"showInSummary": false
 				},
+				"theAnswer": {
+				    "type": "Number",
+				    "exact": 42
+				},
 				"error": {
 					"type": "undefined"
 				}
@@ -91,6 +98,9 @@ Small node.js application to monitor web apps
     "url": "https://westworld.com/api/version",
     "method": "GET",
     "body": null,
+    "headers": {
+        "X-Auth": "JWT_TOKEN"
+    },
     "settings": {
         "intervalInMinutes": 1,
         "notifyAfterXFailures": 1,
@@ -113,6 +123,10 @@ Small node.js application to monitor web apps
                     "higher": 11
                 },
                 "showInSummary": false
+            },
+            "theAnswer": {
+                "type": "Number",
+                "exact": 42
             },
             "error": {
                 "type": "undefined"
