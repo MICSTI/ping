@@ -32,7 +32,11 @@ var vm = new Vue({
         activeModal: null,
 
         // log in info
-        auth: null,
+        // TODO remove after finishing development
+        auth: {
+            jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiNTg3ZTJlNmZiYWQ2NzcyZTI0MDZjNzMxIn0.JEg0k8vT8FBY5tHROSoCc-AA8ewoNouirjKXX5wkAKk",
+            username: "Michael Stifter"
+        },
         loginInfo: {
             username: null,
             password: null
