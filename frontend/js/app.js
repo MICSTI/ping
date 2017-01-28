@@ -22,7 +22,7 @@ Vue.component('user-item', {
             '</li>'
 });
 
-new Vue({
+var vm = new Vue({
     el: '#app',
     data: {
         // active menu
@@ -81,15 +81,23 @@ new Vue({
 
             setTimeout(func, stagger);
         },
-        fetchUserInfo: function() {
+        fetchUserInfo: function(cb) {
             var self = this;
             axios.get('/api/user')
                 .then(function(response) {
                     self.auth = response.data;
+
+                    if (cb !== undefined && typeof cb === 'function') {
+                        cb(null);
+                    }
                 })
                 .catch(function(err) {
                     console.error(err);
                     self.auth = null;
+
+                    if (cb !== undefined && typeof cb === 'function') {
+                        cb(err);
+                    }
                 })
         },
         // puts the focus to an input element
@@ -99,6 +107,13 @@ new Vue({
             if (element !== null) {
                 element.focus();
             }
+        },
+        hideToast: function() {
+            var self = this;
+
+            Vue.set(this.toast, 'visible', false);
+
+            vm.$forceUpdate();
         },
         isActive: function(state) {
             return this.activeMenu === state;
@@ -111,6 +126,9 @@ new Vue({
         },
         isModalVisible: function() {
             return this.modal.visible;
+        },
+        isToastVisible: function() {
+            return this.toast.visible;
         },
         login: function(auth) {
             this.auth = auth;
@@ -160,6 +178,21 @@ new Vue({
 
             Vue.set(this.modal, 'visible', true);
         },
+        // displays a toast on the screen for a certain amount of time
+        showToast: function(message, opts) {
+            Vue.set(this.toast, 'message', message);
+            Vue.set(this.toast, 'type', opts.type || 'toast-success');
+            Vue.set(this.toast, 'visible', true);
+
+            vm.$forceUpdate();
+
+            // default timeout is 1 second (if set to zero or a negative value toast will not disappear automatically)
+            var displayDuration = opts.timeout || 2500;
+
+            if (displayDuration > 0) {
+                setTimeout(this.hideToast, displayDuration);
+            }
+        },
         // performs the submit of the login form
         submitLogin: function() {
             var self = this;
@@ -172,9 +205,27 @@ new Vue({
 
                 self.setAuthHeader(jwt);
 
-                self.fetchUserInfo();
+                self.fetchUserInfo(function(err) {
+                    if (err) {
+                        // login not successful
+                        self.showToast('Failed to log in', {
+                            type: 'toast-danger'
+                        });
+                    }
+
+                    self.showToast('Logged in successfully', {
+                        type: 'toast-success',
+                        timeout: 2500
+                    });
+                });
             }).catch(function(err) {
                 console.error(err);
+
+                // login not successful
+                self.showToast('Failed to log in', {
+                    type: 'toast-danger',
+                    timeout: 2500
+                });
             });
 
             // clear login info
@@ -189,6 +240,11 @@ new Vue({
             console.log('not implemented yet');
 
             self.closeModal();
+        },
+        toast: {
+            type: null,
+            message: null,
+            visible: false
         },
         // gets the sites from the API and puts them in the sites array
         updateSites: function() {

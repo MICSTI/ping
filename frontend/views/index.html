@@ -117,6 +117,13 @@
                 </div>
             </div>
         </section>
+
+        <section class="toast-container" v-if="isToastVisible()">
+            <div class="toast" v-bind:class="toast.type">
+                <button class="btn btn-clear float-right" v-on:click="hideToast()"></button>
+                {{toast.message}}
+            </div>
+        </section>
     </section>
 
     <script type="text/javascript" src="/build/scripts/scripts.js"></script>
