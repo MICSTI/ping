@@ -18,7 +18,7 @@
         <img src="/public/img/ping-logo.png" width="99" height="90"  />
     </header>
 
-    <section class="root" id="app">
+    <section class="root" id="app" v-cloak>
         <nav>
             <ul>
                 <li v-bind:class="{ active: isActive('sites') }" v-on:click="setActive('sites')">Sites</li>
