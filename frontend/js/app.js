@@ -215,6 +215,8 @@ var vm = new Vue({
                 case 'addSite':
                     Vue.set(this.modal, 'title', "Add site");
 
+                    this.siteInfo = {};
+
                     this.executeStaggered(function() {
                         self.focus('name');
 
@@ -224,6 +226,7 @@ var vm = new Vue({
                             mode: 'code',
                             indentation: 2
                         };
+
                         self.monitorConfigEditor = new JSONEditor(container, options);
 
                         self.monitorConfigJson = self.monitorConfigDefault;
@@ -304,7 +307,7 @@ var vm = new Vue({
 
             axios.post('/api/sites', this.siteInfo).then(function(response) {
                 self.closeModal(function() {
-                    self.siteInfo = null;
+
                 });
 
                 self.showToast('Successfully saved new site', {
@@ -317,7 +320,7 @@ var vm = new Vue({
                 console.error(err);
 
                 self.closeModal(function() {
-                    self.siteInfo = null;
+
                 });
 
                 self.showToast('Could not save site', {
@@ -327,8 +330,6 @@ var vm = new Vue({
 
                 self.updateSites();
             });
-
-            self.closeModal();
         },
         toast: {
             type: null,
