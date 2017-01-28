@@ -58,20 +58,37 @@ new Vue({
         this.updateUsers();
     },
     methods: {
-        closeModal: function() {
+        closeModal: function(cb) {
+            if (cb !== undefined && typeof cb === 'function') {
+                cb();
+            }
+
             Vue.set(this.modal, 'visible', false);
         },
-        // puts the focus to an input element, after a defined amount of time
-        focusStaggered: function(id, stagger) {
+        // executes a function, after a defined amount of time
+        executeStaggered: function(func, stagger) {
             stagger = stagger !== undefined ? stagger : 180;
 
-            setTimeout(function() {
-                var element = document.getElementById(id);
+            setTimeout(func, stagger);
+        },
+        fetchUserInfo: function() {
+            var self = this;
+            axios.get('/api/user')
+                .then(function(response) {
+                    self.auth = response.data;
+                })
+                .catch(function(err) {
+                    console.error(err);
+                    self.auth = null;
+                })
+        },
+        // puts the focus to an input element
+        focus: function(id) {
+            var element = document.getElementById(id);
 
-                if (element !== null) {
-                    element.focus();
-                }
-            }, stagger);
+            if (element !== null) {
+                element.focus();
+            }
         },
         isActive: function(state) {
             return this.activeMenu === state;
@@ -84,6 +101,7 @@ new Vue({
         },
         logout: function() {
             this.auth = null;
+            this.setAuthHeader(null);
         },
         setActive: function(state) {
             this.activeMenu = state;
@@ -97,34 +115,59 @@ new Vue({
                 content:    '<form>' +
                                 '<div class="form-group">' +
                                     '<label class="form-label" for="username">Username</label>' +
-                                    '<input class="form-input" type="text" id="username" placeholder="Username" />' +
+                                    '<input class="form-input" type="text" id="username" placeholder="Username" value="" />' +
                                 '</div>' +
                                 '<div class="form-group">' +
                                     '<label class="form-label" for="password">Password</label>' +
-                                    '<input class="form-input" type="password" id="password" placeholder="Password" />' +
+                                    '<input class="form-input" type="password" id="password" placeholder="Password" value="" />' +
                                 '</div>' +
                             '</form>',
                 buttons: [
                     {
                         class: 'btn',
                         display: 'Cancel',
-                        action: self.closeModal
+                        action: function() {
+                            self.closeModal(function() {
+                                document.getElementById('username').value = '';
+                                document.getElementById('password').value = '';
+                            });
+                        }
                     },
                     {
                         class: 'btn btn-primary',
                         display: 'Login',
                         action: function() {
-                            self.closeModal();
+                            axios.post('/api/session', {
+                                username: document.getElementById('username').value,
+                                password: document.getElementById('password').value
+                            }).then(function(response) {
+                                var jwt = response.data;
 
-                            // TODO replace with real API call
-                            self.auth = {
-                                username: "Michael Stifter"
-                            }
+                                self.setAuthHeader(jwt);
+
+                                self.fetchUserInfo();
+                            }).catch(function(err) {
+                                console.error(err);
+                            });
+
+                            self.closeModal(function() {
+                                document.getElementById('username').value = '';
+                                document.getElementById('password').value = '';
+                            });
                         }
                     }
                 ],
-                focus: 'username'
+                onOpen: function() {
+                    self.focus('username');
+                }
             });
+        },
+        setAuthHeader: function(jwt) {
+            if (jwt) {
+                axios.defaults.headers.common['X-Auth'] = jwt;
+            } else {
+                axios.defaults.headers.common['X-Auth'] = null;
+            }
         },
         // sets the modal content and displays it
         showModal: function(opts) {
@@ -133,10 +176,8 @@ new Vue({
             Vue.set(this.modal, 'buttons', opts.buttons || [{ class: 'btn btn-primary', display: 'Ok', action: this.closeModal }]);
             Vue.set(this.modal, 'visible', true);
 
-            if (opts.focus !== undefined) {
-                // we wrap the focusing around a timeout, because the element does not exist immediately.
-                // maybe there is a more elegant solution?
-                this.focusStaggered(opts.focus, 180);
+            if (opts.onOpen !== undefined && typeof opts.onOpen === 'function') {
+                this.executeStaggered(opts.onOpen, 180);
             }
         },
         // gets the sites from the API and puts them in the sites array
