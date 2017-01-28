@@ -44,17 +44,17 @@ Small node.js application to monitor web apps
 	"name": "Westworld API",
 	"description": "The official API for the Westworld universe",
 	"url": "https://westworld.com/api",
-	"active": false,
+	"active": false,                        // is the site currently being monitored
 	"notify": [
-		"587e2e6fbad6772e2406c731"
+		"587e2e6fbad6772e2406c731"          // _id of user to be notified
 	],
-	"maintenance": false,
+	"maintenance": false,                   // is this site currently in maintenance mode (meaning no checks will be performed, but goes against uptime statistics of site)
 	"config": {
 		"url": "https://westworld.com/api/version",
 		"method": "GET",
-		"body": null,
+		"body": null,                       // in case of other request methods, it is possible to use 'body'
 		"headers": {
-		    "X-Auth": "JWT_TOKEN"
+		    "X-Auth": "JWT_TOKEN"           // replace with real JWT
 		},
 		"settings": {
 			"intervalInMinutes": 1,
@@ -91,7 +91,7 @@ Small node.js application to monitor web apps
 	}
 }
 ```
-- or, you on the user interface, you can fill in a simple form where you provide the basic info
+- or, on the user interface, you can fill in a simple form where you provide the basic info
 - and then supply the data for the "config" property in the JSON editor, for example like this:
 ```javascript
 {
