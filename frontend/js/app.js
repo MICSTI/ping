@@ -58,6 +58,40 @@ new Vue({
         this.updateUsers();
     },
     methods: {
+        addSite: function() {
+            // show modal
+            var self = this;
+
+            this.showModal({
+                title: 'Add site',
+                content:    '<form>' +
+
+                            '</form>',
+                buttons: [
+                    {
+                        class: 'btn',
+                        display: 'Cancel',
+                        action: function() {
+                            self.closeModal(function onClose() {
+
+                            });
+                        }
+                    },
+                    {
+                        class: 'btn btn-primary',
+                        display: 'Add site',
+                        action: function() {
+                            self.closeModal(function onClose() {
+
+                            });
+                        }
+                    }
+                ],
+                onOpen: function() {
+                    self.focus('username');
+                }
+            });
+        },
         closeModal: function(cb) {
             if (cb !== undefined && typeof cb === 'function') {
                 cb();
@@ -127,7 +161,7 @@ new Vue({
                         class: 'btn',
                         display: 'Cancel',
                         action: function() {
-                            self.closeModal(function() {
+                            self.closeModal(function onClose() {
                                 document.getElementById('username').value = '';
                                 document.getElementById('password').value = '';
                             });
@@ -150,7 +184,7 @@ new Vue({
                                 console.error(err);
                             });
 
-                            self.closeModal(function() {
+                            self.closeModal(function onClose() {
                                 document.getElementById('username').value = '';
                                 document.getElementById('password').value = '';
                             });
