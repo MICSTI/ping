@@ -31,12 +31,52 @@ var vm = new Vue({
         // active modal
         activeModal: null,
 
-        // log in info
-        // TODO remove after finishing development
-        auth: {
-            jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiNTg3ZTJlNmZiYWQ2NzcyZTI0MDZjNzMxIn0.JEg0k8vT8FBY5tHROSoCc-AA8ewoNouirjKXX5wkAKk",
-            username: "Michael Stifter"
+        // monitor config JSON editor
+        monitorConfigEditor: null,
+        monitorConfigDefault: {
+            "url": "https://westworld.com/api/version",
+            "method": "GET",
+            "body": null,
+            "headers": {
+                "X-Auth": "JWT_TOKEN"
+            },
+            "settings": {
+                "intervalInMinutes": 1,
+                "notifyAfterXFailures": 1,
+                "addRandomParameter": false
+            },
+            "response": {
+                "status": 200,
+                "type": "json",
+                "data": {
+                    "version": {
+                        "type": "String",
+                        "regex": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                        "showInSummary": true,
+                        "name": "Version",
+                        "description": "The version identifier of the current API build"
+                    },
+                    "buildNumber": {
+                        "type": "Number",
+                        "range": {
+                            "higher": 11
+                        },
+                        "showInSummary": false
+                    },
+                    "theAnswer": {
+                        "type": "Number",
+                        "exact": 42
+                    },
+                    "error": {
+                        "type": "undefined"
+                    }
+                }
+            }
         },
+        monitorConfigJson: null,
+
+        // log in info
+        auth: null,
         loginInfo: {
             username: null,
             password: null
@@ -47,6 +87,9 @@ var vm = new Vue({
             title: "Modal title",
             visible: false
         },
+
+        // for add/edit site modal
+        siteInfo: {},
 
         // all sites that are being monitored by the application
         sites: [],
@@ -172,6 +215,22 @@ var vm = new Vue({
                 case 'addSite':
                     Vue.set(this.modal, 'title', "Add site");
 
+                    this.executeStaggered(function() {
+                        self.focus('name');
+
+                        // JSON editor
+                        var container = document.getElementById('config');
+                        var options = {
+                            mode: 'code',
+                            indentation: 2
+                        };
+                        self.monitorConfigEditor = new JSONEditor(container, options);
+
+                        self.monitorConfigJson = self.monitorConfigDefault;
+
+                        self.monitorConfigEditor.set(self.monitorConfigJson);
+                    }, 180);
+
                     break;
 
                 default:
@@ -241,7 +300,33 @@ var vm = new Vue({
         submitAddSite: function() {
             var self = this;
 
-            console.log('not implemented yet');
+            Vue.set(this.siteInfo, 'config', this.monitorConfigEditor.get(this.monitorConfigJson));
+
+            axios.post('/api/sites', this.siteInfo).then(function(response) {
+                self.closeModal(function() {
+                    self.siteInfo = null;
+                });
+
+                self.showToast('Successfully saved new site', {
+                    type: 'toast-success',
+                    timeout: 2500
+                });
+
+                self.updateSites();
+            }).catch(function(err) {
+                console.error(err);
+
+                self.closeModal(function() {
+                    self.siteInfo = null;
+                });
+
+                self.showToast('Could not save site', {
+                    type: 'toast-danger',
+                    timeout: 2500
+                });
+
+                self.updateSites();
+            });
 
             self.closeModal();
         },

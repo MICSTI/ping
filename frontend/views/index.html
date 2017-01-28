@@ -60,7 +60,7 @@
             </section>
 
             <section class="sites-container col-12" v-if="isActive('users')">
-                <div class="float-right"><button class="btn btn-primary" v-on:click="updateUsers">Refresh</button></div>
+                <div class="float-right"><button class="btn" v-on:click="updateUsers">Refresh</button></div>
                 <div class="section-title"><h4>Users</h4></div>
                 <div class="section-content">
                     <div v-if="!usersLoading">
@@ -104,7 +104,39 @@
                     <!-- Add site content -->
                     <div class="modal-content" v-if="isModal('addSite')">
                         <form>
-                            Please add a new site
+                            <div class="form-group">
+                                <label class="form-label" for="name">Site name</label>
+                                <input class="form-input" type="text" id="name" placeholder="Site name" v-model="siteInfo.name" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="description">Description</label>
+                                <input class="form-input" type="text" id="description" placeholder="Description" v-model="siteInfo.description" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="url">URL</label>
+                                <input class="form-input" type="url" id="url" placeholder="Site URL" v-model="siteInfo.url" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-switch">
+                                    <input type="checkbox" v-model="siteInfo.active" />
+                                    <i class="form-icon"></i> Site should be monitored immediately
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="notify">People that should be notified about this site's status</label>
+                                <select class="form-select" id="notify" v-model="siteInfo.notify" multiple>
+                                    <option v-for="user in users" v-bind:value="user._id">{{user.username}}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="config">Monitoring configuration</label>
+                                <div class="json-editor" id="config"></div>
+                            </div>
                         </form>
                     </div>
                 </div>
