@@ -24,7 +24,7 @@
                 <li v-bind:class="{ active: isActive('sites') }" v-on:click="setActive('sites')">Sites</li>
                 <li v-bind:class="{ active: isActive('users') }" v-on:click="setActive('users')">Users</li>
 
-                <li v-if="!isLoggedIn()" v-on:click="showLoginModal()" class="float-right">Log in</li>
+                <li v-if="!isLoggedIn()" v-on:click="showModal('login')" class="float-right">Log in</li>
                 <div v-else class="float-right dropdown">
                     <li href="#" class="dropdown-toggle" tabindex="0">{{auth.username}} <i class="icon-caret"></i></li>
                     <ul class="menu">
@@ -40,7 +40,7 @@
         <section class="content">
             <section class="sites-container col-12" v-if="isActive('sites')">
                 <div class="float-right">
-                    <button class="btn btn-primary" v-if="isLoggedIn()" v-on:click="addSite">Add site</button>
+                    <button class="btn btn-primary" v-if="isLoggedIn()" v-on:click="showModal('addSite')">Add site</button>
                     <button class="btn" v-on:click="updateSites">Refresh</button>
                 </div>
                 <div class="section-title"><h4>Sites</h4></div>
@@ -86,10 +86,34 @@
                     <div class="modal-title">{{modal.title}}</div>
                 </div>
                 <div class="modal-body">
-                    <div class="content" v-html="modal.content"></div>
+                    <!-- Login content -->
+                    <div class="modal-content" v-if="isModal('login')">
+                        <form>
+                            <div class="form-group">
+                                <label class="form-label" for="username">Username</label>
+                                <input class="form-input" type="text" id="username" placeholder="Username" v-model="loginInfo.username" v-on:keyup.enter="submitLogin()" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="password">Password</label>
+                                <input class="form-input" type="password" id="password" placeholder="Password" v-model="loginInfo.password" v-on:keyup.enter="submitLogin()" />
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Add site content -->
+                    <div class="modal-content" v-if="isModal('addSite')">
+                        <form>
+                            Please add a new site
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-footer" v-if="modal.buttons.length > 0">
-                    <button v-for="button in modal.buttons" v-bind:class="button.class" v-on:click="(typeof button.action === 'function') && button.action()">{{button.display}}</button>
+                <div class="modal-footer">
+                    <button class="btn" v-on:click="closeModal()">Cancel</button>
+
+                    <button v-if="isModal('login')" class="btn btn-primary" v-on:click="submitLogin()">Log in</button>
+
+                    <button v-if="isModal('addSite')" class="btn btn-primary" v-on:click="submitAddSite()">Add site</button>
                 </div>
             </div>
         </section>

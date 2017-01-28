@@ -28,14 +28,19 @@ new Vue({
         // active menu
         activeMenu: 'sites',
 
+        // active modal
+        activeModal: null,
+
         // log in info
         auth: null,
+        loginInfo: {
+            username: null,
+            password: null
+        },
 
         // modal
         modal: {
             title: "Modal title",
-            content: "Modal content",
-            buttons: [],
             visible: false
         },
 
@@ -59,38 +64,7 @@ new Vue({
     },
     methods: {
         addSite: function() {
-            // show modal
-            var self = this;
 
-            this.showModal({
-                title: 'Add site',
-                content:    '<form>' +
-
-                            '</form>',
-                buttons: [
-                    {
-                        class: 'btn',
-                        display: 'Cancel',
-                        action: function() {
-                            self.closeModal(function onClose() {
-
-                            });
-                        }
-                    },
-                    {
-                        class: 'btn btn-primary',
-                        display: 'Add site',
-                        action: function() {
-                            self.closeModal(function onClose() {
-
-                            });
-                        }
-                    }
-                ],
-                onOpen: function() {
-                    self.focus('username');
-                }
-            });
         },
         closeModal: function(cb) {
             if (cb !== undefined && typeof cb === 'function') {
@@ -98,6 +72,8 @@ new Vue({
             }
 
             Vue.set(this.modal, 'visible', false);
+
+            this.activeModal = null;
         },
         // executes a function, after a defined amount of time
         executeStaggered: function(func, stagger) {
@@ -130,6 +106,9 @@ new Vue({
         isLoggedIn: function() {
             return this.auth !== null;
         },
+        isModal: function(state) {
+            return this.activeModal === state;
+        },
         isModalVisible: function() {
             return this.modal.visible;
         },
@@ -143,62 +122,6 @@ new Vue({
         setActive: function(state) {
             this.activeMenu = state;
         },
-        // displays the login modal
-        showLoginModal: function() {
-            var self = this;
-
-            this.showModal({
-                title: 'Log in',
-                content:    '<form>' +
-                                '<div class="form-group">' +
-                                    '<label class="form-label" for="username">Username</label>' +
-                                    '<input class="form-input" type="text" id="username" placeholder="Username" value="" />' +
-                                '</div>' +
-                                '<div class="form-group">' +
-                                    '<label class="form-label" for="password">Password</label>' +
-                                    '<input class="form-input" type="password" id="password" placeholder="Password" value="" />' +
-                                '</div>' +
-                            '</form>',
-                buttons: [
-                    {
-                        class: 'btn',
-                        display: 'Cancel',
-                        action: function() {
-                            self.closeModal(function onClose() {
-                                document.getElementById('username').value = '';
-                                document.getElementById('password').value = '';
-                            });
-                        }
-                    },
-                    {
-                        class: 'btn btn-primary',
-                        display: 'Login',
-                        action: function() {
-                            axios.post('/api/session', {
-                                username: document.getElementById('username').value,
-                                password: document.getElementById('password').value
-                            }).then(function(response) {
-                                var jwt = response.data;
-
-                                self.setAuthHeader(jwt);
-
-                                self.fetchUserInfo();
-                            }).catch(function(err) {
-                                console.error(err);
-                            });
-
-                            self.closeModal(function onClose() {
-                                document.getElementById('username').value = '';
-                                document.getElementById('password').value = '';
-                            });
-                        }
-                    }
-                ],
-                onOpen: function() {
-                    self.focus('username');
-                }
-            });
-        },
         setAuthHeader: function(jwt) {
             if (jwt) {
                 axios.defaults.headers.common['X-Auth'] = jwt;
@@ -207,15 +130,65 @@ new Vue({
             }
         },
         // sets the modal content and displays it
-        showModal: function(opts) {
-            Vue.set(this.modal, 'title', opts.title || "");
-            Vue.set(this.modal, 'content', opts.content || "");
-            Vue.set(this.modal, 'buttons', opts.buttons || [{ class: 'btn btn-primary', display: 'Ok', action: this.closeModal }]);
-            Vue.set(this.modal, 'visible', true);
-
-            if (opts.onOpen !== undefined && typeof opts.onOpen === 'function') {
-                this.executeStaggered(opts.onOpen, 180);
+        showModal: function(id) {
+            if (id === undefined) {
+                throw new Error('Cannot open modal without id');
             }
+
+            var self = this;
+
+            switch(id) {
+                case 'login':
+                    Vue.set(this.modal, 'title', "Log in");
+
+                    this.executeStaggered(function() {
+                        self.focus('username');
+                    }, 180);
+
+                    break;
+
+                case 'addSite':
+                    Vue.set(this.modal, 'title', "Add site");
+
+                    break;
+
+                default:
+                    throw new Error("Modal with id '" + id + "' is not defined");
+            }
+
+            this.activeModal = id;
+
+            Vue.set(this.modal, 'visible', true);
+        },
+        // performs the submit of the login form
+        submitLogin: function() {
+            var self = this;
+
+            axios.post('/api/session', {
+                username: this.loginInfo.username,
+                password: this.loginInfo.password
+            }).then(function(response) {
+                var jwt = response.data;
+
+                self.setAuthHeader(jwt);
+
+                self.fetchUserInfo();
+            }).catch(function(err) {
+                console.error(err);
+            });
+
+            // clear login info
+            this.loginInfo.username = null;
+            this.loginInfo.password = null;
+
+            self.closeModal();
+        },
+        submitAddSite: function() {
+            var self = this;
+
+            console.log('not implemented yet');
+
+            self.closeModal();
         },
         // gets the sites from the API and puts them in the sites array
         updateSites: function() {
