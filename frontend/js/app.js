@@ -127,6 +127,9 @@ new Vue({
         isActive: function(state) {
             return this.activeMenu === state;
         },
+        isLoggedIn: function() {
+            return this.auth !== null;
+        },
         isModalVisible: function() {
             return this.modal.visible;
         },
