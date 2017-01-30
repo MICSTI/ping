@@ -39,6 +39,9 @@ jspm_packages
 # WebStorm
 .idea
 
+# Build files
+build
+
 # Config files
 config/db.local.js
 config/db.production.js
