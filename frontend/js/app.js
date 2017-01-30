@@ -319,7 +319,6 @@ var vm = new Vue({
             this.siteInfo.config = this.monitorConfigEditor.get(this.monitorConfigJson);
 
             axios.post('/api/sites', this.siteInfo).then(function(response) {
-
                 vm.showToast('Successfully saved new site', {
                     type: 'toast-success',
                     timeout: 2500
