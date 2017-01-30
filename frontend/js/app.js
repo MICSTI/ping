@@ -89,13 +89,27 @@ var vm = new Vue({
         },
 
         // for add/edit site modal
-        siteInfo: {},
+        siteInfo: {
+            name: '',
+            description: '',
+            url: '',
+            active: false,
+            notify: [],
+            config: {}
+        },
 
         // all sites that are being monitored by the application
         sites: [],
 
         // flag to indicate if the sites are currently being loaded from the server
         sitesLoading: false,
+
+        // toast (notification)
+        toast: {
+            message: '',
+            type: '',
+            visible: false
+        },
 
         // all users that can be added to be notified about a site's status change
         users: [],
@@ -156,11 +170,7 @@ var vm = new Vue({
             }
         },
         hideToast: function() {
-            var self = this;
-
-            Vue.set(this.toast, 'visible', false);
-
-            vm.$forceUpdate();
+            this.toast.visible = false;
         },
         isActive: function(state) {
             return this.activeMenu === state;
@@ -200,25 +210,30 @@ var vm = new Vue({
                 throw new Error('Cannot open modal without id');
             }
 
-            var self = this;
-
             switch(id) {
                 case 'login':
                     Vue.set(this.modal, 'title', "Log in");
 
                     this.executeStaggered(function() {
-                        self.focus('username');
+                        vm.focus('username');
                     }, 180);
 
                     break;
 
                 case 'addSite':
-                    Vue.set(this.modal, 'title', "Add site");
+                    this.modal.title = 'Add site';
 
-                    this.siteInfo = {};
+                    this.siteInfo = {
+                        name: '',
+                        description: '',
+                        url: '',
+                        active: false,
+                        notify: [],
+                        config: {}
+                    };
 
                     this.executeStaggered(function() {
-                        self.focus('name');
+                        vm.focus('name');
 
                         // JSON editor
                         var container = document.getElementById('config');
@@ -227,11 +242,11 @@ var vm = new Vue({
                             indentation: 2
                         };
 
-                        self.monitorConfigEditor = new JSONEditor(container, options);
+                        vm.monitorConfigEditor = new JSONEditor(container, options);
 
-                        self.monitorConfigJson = self.monitorConfigDefault;
+                        vm.monitorConfigJson = vm.monitorConfigDefault;
 
-                        self.monitorConfigEditor.set(self.monitorConfigJson);
+                        vm.monitorConfigEditor.set(vm.monitorConfigJson);
                     }, 180);
 
                     break;
@@ -250,86 +265,79 @@ var vm = new Vue({
             Vue.set(this.toast, 'type', opts.type || 'toast-success');
             Vue.set(this.toast, 'visible', true);
 
-            vm.$forceUpdate();
-
-            // default timeout is 1 second (if set to zero or a negative value toast will not disappear automatically)
+            // default timeout is 2.5 seconds (if set to zero or a negative value toast will not disappear automatically)
             var displayDuration = opts.timeout || 2500;
 
             if (displayDuration > 0) {
-                setTimeout(this.hideToast, displayDuration);
+                setTimeout(vm.hideToast, displayDuration);
             }
         },
         // performs the submit of the login form
         submitLogin: function() {
-            var self = this;
-
             axios.post('/api/session', {
                 username: this.loginInfo.username,
                 password: this.loginInfo.password
             }).then(function(response) {
                 var jwt = response.data;
 
-                self.setAuthHeader(jwt);
+                vm.setAuthHeader(jwt);
 
-                self.fetchUserInfo(function(err) {
+                vm.fetchUserInfo(function(err) {
                     if (err) {
                         // login not successful
-                        self.showToast('Failed to log in', {
-                            type: 'toast-danger'
+                        vm.showToast('Failed to log in', {
+                            type: 'toast-danger',
+                            timeout: 2500
                         });
                     }
 
-                    self.showToast('Logged in successfully', {
+                    vm.showToast('Logged in successfully', {
                         type: 'toast-success',
                         timeout: 2500
                     });
                 });
+
+
             }).catch(function(err) {
                 console.error(err);
 
                 // login not successful
-                self.showToast('Failed to log in', {
+                vm.showToast('Failed to log in', {
                     type: 'toast-danger',
                     timeout: 2500
                 });
             });
 
-            // clear login info
-            this.loginInfo.username = null;
-            this.loginInfo.password = null;
+            vm.closeModal();
 
-            self.closeModal();
+            // clear login info
+            vm.loginInfo.username = null;
+            vm.loginInfo.password = null;
         },
         submitAddSite: function() {
-            var self = this;
-
-            Vue.set(this.siteInfo, 'config', this.monitorConfigEditor.get(this.monitorConfigJson));
+            // get the config value from the JSON editor
+            this.siteInfo.config = this.monitorConfigEditor.get(this.monitorConfigJson);
 
             axios.post('/api/sites', this.siteInfo).then(function(response) {
-                self.closeModal(function() {
 
-                });
-
-                self.showToast('Successfully saved new site', {
+                vm.showToast('Successfully saved new site', {
                     type: 'toast-success',
                     timeout: 2500
                 });
 
-                self.updateSites();
+                vm.updateSites();
             }).catch(function(err) {
                 console.error(err);
 
-                self.closeModal(function() {
-
-                });
-
-                self.showToast('Could not save site', {
+                vm.showToast('Could not save site', {
                     type: 'toast-danger',
                     timeout: 2500
                 });
 
-                self.updateSites();
+                vm.updateSites();
             });
+
+            vm.closeModal();
         },
         toast: {
             type: null,
@@ -353,14 +361,12 @@ var vm = new Vue({
         },
         // gets the users from the API and puts them in the users array
         updateUsers: function() {
-            var self = this;
-
-            self.usersLoading = true;
+            this.usersLoading = true;
 
             axios.get('/api/users')
                 .then(function(response) {
-                    self.users = response.data;
-                    self.usersLoading = false;
+                    vm.users = response.data;
+                    vm.usersLoading = false;
                 })
                 .catch(function(err) {
                     console.error(err);

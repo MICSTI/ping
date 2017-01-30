@@ -137,6 +137,7 @@
                                 <div class="json-editor" id="config"></div>
                             </div>
                         </form>
+                        Huku
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -150,7 +151,7 @@
         </section>
 
         <transition name="fade">
-            <section class="toast-container" v-if="isToastVisible()">
+            <section class="toast-container" v-show="isToastVisible()">
                 <div class="toast" v-bind:class="toast.type">
                     <button class="btn btn-clear float-right" v-on:click="hideToast()"></button>
                     {{toast.message}}
