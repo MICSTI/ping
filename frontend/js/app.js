@@ -31,6 +31,23 @@ var vm = new Vue({
         // active modal
         activeModal: null,
 
+        // form validation
+        formValidation: {
+            'addSite': {
+                display: false,
+                fields: {
+                    'name': {
+                        is: 'required',
+                        valid: null
+                    },
+                    'description': {
+                        is: 'required',
+                        valid: null
+                    }
+                }
+            }
+        },
+
         // monitor config JSON editor
         monitorConfigEditor: null,
         monitorConfigDefault: {
@@ -127,12 +144,68 @@ var vm = new Vue({
         addSite: function() {
 
         },
+        checkFormValidity: function(formId) {
+            var form = this.formValidation[formId];
+
+            var formValid = true;
+
+            if (!form) {
+                throw new Error("No form with ID '" + formId + "' declared in formValidation object");
+            }
+
+            if (form.fields !== undefined) {
+                var formFields = Object.keys(form.fields);
+
+                if (formFields.length > 0) {
+                    formFields.forEach(function(field) {
+                        if (form.fields.hasOwnProperty(field)) {
+                            var elem = document.getElementById(field);
+
+                            if (!elem) {
+                                throw new Error("No input element with ID '" + field + "' found in form " + formId);
+                            }
+
+                            var validator = form.fields[field];
+
+                            if (!validator || validator.is === undefined || validator.valid === undefined) {
+                                throw new Error("Validation object with ID '" + field + "' is malformed");
+                            }
+
+                            switch (validator.is) {
+                                case 'required':
+                                    validator.valid = elem.value.trim() !== "";
+
+                                    // set global valid flag to false if this element is invalid
+                                    if (!validator.valid) {
+                                        formValid = false;
+                                    }
+
+                                    break;
+
+                                default:
+                                    throw new Error("Illegal value for validator.is: " + validator.is);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // after the first check, display the error/success messages
+            vm.formValidation[formId].display = true;
+
+            return formValid;
+        },
         closeModal: function(cb) {
             if (cb !== undefined && typeof cb === 'function') {
                 cb();
             }
 
             Vue.set(this.modal, 'visible', false);
+
+            // clear form validation messages
+            if (this.formValidation[this.activeModal]) {
+                this.formValidation[this.activeModal].display = false;
+            }
 
             this.activeModal = null;
         },
@@ -243,10 +316,25 @@ var vm = new Vue({
                         };
 
                         vm.monitorConfigEditor = new JSONEditor(container, options);
-
                         vm.monitorConfigJson = vm.monitorConfigDefault;
-
                         vm.monitorConfigEditor.set(vm.monitorConfigJson);
+
+                        // form validation
+
+                        var inputElements = document.getElementsByClassName('form-input');
+                        var inputElementLength = inputElements.length;
+
+                        for (var i = 0; i < inputElementLength; i++) {
+                            var element = inputElements[i];
+
+                            if (element) {
+                                element.addEventListener('blur', function() {
+                                    if (vm.formValidation[vm.activeModal] && vm.formValidation[vm.activeModal].display === true) {
+                                        vm.checkFormValidity(vm.activeModal);
+                                    }
+                                });
+                            }
+                        }
                     }, 180);
 
                     break;
@@ -315,6 +403,11 @@ var vm = new Vue({
             vm.loginInfo.password = null;
         },
         submitAddSite: function() {
+            // check if form is valid
+            if (!this.checkFormValidity('addSite')) {
+                return;
+            }
+
             // get the config value from the JSON editor
             this.siteInfo.config = this.monitorConfigEditor.get(this.monitorConfigJson);
 

@@ -105,7 +105,8 @@
                         <form>
                             <div class="form-group">
                                 <label class="form-label" for="name">Site name</label>
-                                <input class="form-input" type="text" id="name" placeholder="Site name" v-model="siteInfo.name" />
+                                <input class="form-input" type="text" id="name" placeholder="Site name" v-model="siteInfo.name" v-bind:class="{ 'is-success': formValidation.addSite.display === true && formValidation.addSite.fields.name.valid === true, 'is-danger': formValidation.addSite.display === true && formValidation.addSite.fields.name.valid === false }" />
+                                <p class="form-input-hint" v-show="formValidation.addSite.display === true && formValidation.addSite.fields.name.valid === false">Site name is a required field.</p>
                             </div>
 
                             <div class="form-group">
