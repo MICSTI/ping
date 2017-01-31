@@ -4,12 +4,12 @@
 Vue.component('site-item', {
     props: ['site'],
     template: '<li class="site-element">' +
-                '<div class="text-bold">{{site.name}}</div>' +
-                '<div>{{site.description}}</div>' +
-                '<div><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
+                '<div class="site-element-title">{{site.name}}</div>' +
+                '<div class="site-element-description">{{site.description}}</div>' +
+                '<div class="site-element-url"><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
                 '<div class="listeners-container" v-if="site.notify && site.notify.length > 0">' +
                     '<div class="site-listener chip-sm" v-for="user in site.notify">' +
-                        '<div class="chip-name">{{user.username}}</div>' +
+                        '<div class="chip-name" v-bind:title="user.username">{{user.username}}</div>' +
                     '</div>' +
                 '</div>' +
             '</li>'

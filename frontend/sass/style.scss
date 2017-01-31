@@ -86,8 +86,23 @@ nav ul {
 .site-element {
   border: 1px solid #bbb;
   margin-bottom: 0.5em;
-  padding: 0.6em 0.4em 0.3em 0.4em;
+  padding: 0.7em 0.6em 0.5em 0.6em;
   box-shadow: 0.1em 0.05em 0.25em 0 rgba(158,158,158,.81)
+}
+
+.site-element-title {
+  font-size: 1.35em;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 0.25em;
+}
+
+.site-element-description {
+  margin-bottom: 0.35em;
+}
+
+.site-element-url {
+  font-size: 0.8em;
 }
 
 .user-element {
