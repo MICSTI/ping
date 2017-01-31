@@ -134,8 +134,8 @@ var vm = new Vue({
         // flag to indicate if the users are currently being loaded from the server
         usersLoading: false
     },
-    // on ready event handler
-    ready: function() {
+    // on created event handler
+    created: function() {
         // upon load, init sites and users
         this.updateSites();
         this.updateUsers();
