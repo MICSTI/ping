@@ -23,6 +23,9 @@ Vue.component('site-item', {
         },
         getUserNotifyTitle: function(user) {
             return user.username + " will be notified about changes to this site status";
+        },
+        onMaintenanceStatusChanged: function(site) {
+            console.log('maintenance status changed', site.maintenance);
         }
     },
     template: '<li class="site-element clearfix">' +
@@ -33,7 +36,7 @@ Vue.component('site-item', {
                     // maintenance mode switch
                     '<div class="form-group" v-if="isLoggedIn() && site.active === true">' +
                         '<label class="form-switch">' +
-                            '<input type="checkbox" v-model="site.maintenance" />' +
+                            '<input type="checkbox" v-model="site.maintenance" v-on:change="onMaintenanceStatusChanged(site)" />' +
                             '<i class="form-icon switch-right"></i>' +
                         '</label>' +
                     '</div>' +
@@ -305,6 +308,9 @@ var vm = new Vue({
         logout: function() {
             this.auth = null;
             this.setAuthHeader(null);
+        },
+        onSiteMaintenanceStatusChanged: function(site) {
+
         },
         setActive: function(state) {
             this.activeMenu = state;

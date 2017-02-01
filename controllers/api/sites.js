@@ -39,4 +39,61 @@ router.post('/', protectRoute, function(req, res, next) {
     });
 });
 
+router.put('/:siteId/maintenance', protectRoute, function(req, res, next) {
+    var error;
+
+    var siteId = req.params.siteId;
+    var maintenanceStatus = req.body.maintenance;
+
+    if (siteId === undefined) {
+        error = new Error();
+        error.status = 400;
+        error.message = "Missing 'siteId' parameter";
+
+        return next(error);
+    }
+
+    if (maintenanceStatus === undefined) {
+        error = new Error();
+        error.status = 400;
+        error.message = "Missing mandatory body parameter 'maintenance'";
+
+        return next(error);
+    }
+
+    if (typeof maintenanceStatus !== 'boolean') {
+        error = new Error();
+        error.status = 400;
+        error.message = "Illegal type for body parameter 'maintenance': Value must be of type 'boolean'";
+
+        return next(error);
+    }
+
+    Site.findOne({
+        _id: siteId
+    }, function(err, site) {
+        if (err) {
+            error = new Error();
+            error.status = 400;
+            error.message = err.message;
+
+            return next(error);
+        }
+
+        site.maintenance = maintenanceStatus;
+
+        site.save(function(err) {
+            if (err) {
+                error = new Error();
+                error.status = 400;
+                error.message = err.message;
+
+                return next(error);
+            }
+
+            res.status(200).send();
+        });
+    });
+});
+
 module.exports = router;
