@@ -17,6 +17,9 @@ Vue.component('site-item', {
                 default:
                     return "No status info available right now. Maybe set status to active?";
             }
+        },
+        getUserNotifyTitle: function(user) {
+            return user.username + " will be notified about changes to this site status";
         }
     },
     template: '<li class="site-element">' +
@@ -33,7 +36,7 @@ Vue.component('site-item', {
                 '<div class="site-element-url"><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
                 '<div class="listeners-container" v-if="site.notify && site.notify.length > 0">' +
                     '<div class="site-listener chip-sm" v-for="user in site.notify">' +
-                        '<div class="chip-name" v-bind:title="user.username">{{user.username}}</div>' +
+                        '<div class="chip-name" v-bind:title="getUserNotifyTitle(user)">{{user.username}}</div>' +
                     '</div>' +
                 '</div>' +
             '</li>'
