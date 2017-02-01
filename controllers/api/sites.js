@@ -80,6 +80,14 @@ router.put('/:siteId/maintenance', protectRoute, function(req, res, next) {
             return next(error);
         }
 
+        if (!site) {
+            error = new Error();
+            error.status = 400;
+            error.message = "No site with this id found";
+
+            return next(error);
+        }
+
         site.maintenance = maintenanceStatus;
 
         site.save(function(err) {

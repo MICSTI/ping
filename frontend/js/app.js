@@ -2,7 +2,7 @@
  * Created by michael.stifter on 17.01.2017.
  */
 Vue.component('site-item', {
-    props: ['site', 'isLoggedIn'],
+    props: ['site', 'isLoggedIn', 'onSiteMaintenanceStatusChanged'],
     methods: {
         getMaintenanceStatus: function(site) {
             return site.maintenance === true ? '<span class="bold color-red">Maintenance mode is on</span><br/>Site is currently not being monitored' : 'Maintenance mode is off';
@@ -23,9 +23,6 @@ Vue.component('site-item', {
         },
         getUserNotifyTitle: function(user) {
             return user.username + " will be notified about changes to this site status";
-        },
-        onMaintenanceStatusChanged: function(site) {
-            console.log('maintenance status changed', site.maintenance);
         }
     },
     template: '<li class="site-element clearfix">' +
@@ -36,7 +33,7 @@ Vue.component('site-item', {
                     // maintenance mode switch
                     '<div class="form-group" v-if="isLoggedIn() && site.active === true">' +
                         '<label class="form-switch">' +
-                            '<input type="checkbox" v-model="site.maintenance" v-on:change="onMaintenanceStatusChanged(site)" />' +
+                            '<input type="checkbox" v-model="site.maintenance" v-on:change="onSiteMaintenanceStatusChanged(site)" />' +
                             '<i class="form-icon switch-right"></i>' +
                         '</label>' +
                     '</div>' +
@@ -310,7 +307,17 @@ var vm = new Vue({
             this.setAuthHeader(null);
         },
         onSiteMaintenanceStatusChanged: function(site) {
+            axios.put('/api/sites/' + site._id + '/maintenance', { maintenance: site.maintenance })
+                .then(function(response) {
+                    // everything went fine, no need to do anything else
+                    console.log('changed maintenance status');
+                })
+                .catch(function(error) {
+                    console.error('failed to update maintenance status', error);
 
+                    // dispatch error event
+
+                });
         },
         setActive: function(state) {
             this.activeMenu = state;
