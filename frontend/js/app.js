@@ -14,7 +14,10 @@ Vue.component('site-item', {
                     '<span class="site-element-status-indicator" v-bind:class="getStatus(site)"></span>' +
                 '</div>' +
 
-                '<div class="site-element-title">{{site.name}}</div>' +
+                '<div>' +
+                    '<span class="site-element-title">{{site.name}}</span>' +
+                    '<span class="label">Not active</span>' +
+                '</div>' +
                 '<div class="site-element-description">{{site.description}}</div>' +
                 '<div class="site-element-url"><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
                 '<div class="listeners-container" v-if="site.notify && site.notify.length > 0">' +
