@@ -310,13 +310,15 @@ var vm = new Vue({
             axios.put('/api/sites/' + site._id + '/maintenance', { maintenance: site.maintenance })
                 .then(function(response) {
                     // everything went fine, no need to do anything else
-                    console.log('changed maintenance status');
                 })
                 .catch(function(error) {
                     console.error('failed to update maintenance status', error);
 
-                    // dispatch error event
+                    // reload sites to overcome error
+                    vm.updateSites();
 
+                    // display error toast
+                    vm.showToast("Oops! Something went wrong during the update process", { type: 'toast-danger', timeout: 4000 });
                 });
         },
         setActive: function(state) {
