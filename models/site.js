@@ -24,6 +24,11 @@ var Site = db.model('Site', {
         type: Boolean,
         default: false
     },
+    status: {
+        type: String,
+        enum: ['ok', 'fail', 'null'],
+        default: 'null'
+    },
     uptime: {
         type: Object
     },

@@ -105,6 +105,31 @@ nav ul {
   font-size: 0.8em;
 }
 
+.site-element-status-container {
+  float: right;
+}
+
+.site-element-status-indicator {
+  display: inline-block;
+  width: 44px;
+  height: 44px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.status-ok {
+  background-color: green;
+}
+
+.status-error {
+  background-color: red;
+}
+
+.status-null {
+  background-color: grey;
+}
+
 .user-element {
   border-top: 1px solid #bbb;
   padding-top: 0.7em;

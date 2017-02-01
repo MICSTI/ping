@@ -3,7 +3,17 @@
  */
 Vue.component('site-item', {
     props: ['site'],
+    methods: {
+        getStatus: function(site) {
+            return "status-" + site.status;
+        }
+    },
     template: '<li class="site-element">' +
+                // status
+                '<div class="site-element-status-container">' +
+                    '<span class="site-element-status-indicator" v-bind:class="getStatus(site)"></span>' +
+                '</div>' +
+
                 '<div class="site-element-title">{{site.name}}</div>' +
                 '<div class="site-element-description">{{site.description}}</div>' +
                 '<div class="site-element-url"><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
