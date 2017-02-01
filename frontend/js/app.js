@@ -4,7 +4,10 @@
 Vue.component('site-item', {
     props: ['site', 'isLoggedIn'],
     methods: {
-        getStatus: function(site) {
+        getMaintenanceStatus: function(site) {
+            return site.maintenance === true ? '<span class="bold color-red">Maintenance mode is on</span><br/>Site is currently not being monitored' : 'Maintenance mode is off';
+        },
+        getSiteStatus: function(site) {
             return "status-" + site.status;
         },
         getStatusTitle: function(site) {
@@ -22,18 +25,24 @@ Vue.component('site-item', {
             return user.username + " will be notified about changes to this site status";
         }
     },
-    template: '<li class="site-element">' +
+    template: '<li class="site-element clearfix">' +
                 '<div class="site-element-status-container">' +
                     // status indicator
-                    '<span class="site-element-status-indicator" v-bind:class="getStatus(site)" v-bind:title="getStatusTitle(site)"></span>' +
+                    '<span class="site-element-status-indicator" v-bind:class="getSiteStatus(site)" v-bind:title="getStatusTitle(site)"></span>' +
 
                     // maintenance mode switch
-                    '<span class="" v-if="isLoggedIn()">Switch it</span>' +
+                    '<div class="form-group" v-if="isLoggedIn() && site.active === true">' +
+                        '<label class="form-switch">' +
+                            '<input type="checkbox" v-model="site.maintenance" />' +
+                            '<i class="form-icon switch-right"></i>' +
+                        '</label>' +
+                    '</div>' +
+                    '<div class="site-element-maintenance-status" v-if="isLoggedIn() && site.active === true" v-html="getMaintenanceStatus(site)"></div>' +
                 '</div>' +
 
                 '<div>' +
                     '<span class="site-element-title">{{site.name}}</span>' +
-                    '<span class="label" v-if="!site.active">Not active</span>' +
+                    '<span class="label label-danger" v-if="!site.active">Not active</span>' +
                 '</div>' +
                 '<div class="site-element-description">{{site.description}}</div>' +
                 '<div class="site-element-url"><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
