@@ -2,6 +2,8 @@ $bg_primary: #dadfe1;
 $text_primary: #222;
 
 $ping: #26a65b;
+$red: #c0392b;
+$grey: #abb7b7;
 
 body {
   background-color: $bg_primary;
@@ -123,15 +125,15 @@ nav ul {
 }
 
 .status-ok {
-  background-color: green;
+  background-color: $ping;
 }
 
-.status-error {
-  background-color: red;
+.status-fail {
+  background-color: $red;
 }
 
 .status-null {
-  background-color: grey;
+  background-color: $grey;
 }
 
 .user-element {

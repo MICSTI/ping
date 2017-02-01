@@ -6,17 +6,28 @@ Vue.component('site-item', {
     methods: {
         getStatus: function(site) {
             return "status-" + site.status;
+        },
+        getStatusTitle: function(site) {
+            switch (site.status) {
+                case "ok":
+                    return "Everything ok";
+                case "fail":
+                    return "Something is not alright";
+                case "null":
+                default:
+                    return "No status info available right now. Maybe set status to active?";
+            }
         }
     },
     template: '<li class="site-element">' +
                 // status
                 '<div class="site-element-status-container">' +
-                    '<span class="site-element-status-indicator" v-bind:class="getStatus(site)"></span>' +
+                    '<span class="site-element-status-indicator" v-bind:class="getStatus(site)" v-bind:title="getStatusTitle(site)"></span>' +
                 '</div>' +
 
                 '<div>' +
                     '<span class="site-element-title">{{site.name}}</span>' +
-                    '<span class="label">Not active</span>' +
+                    '<span class="label" v-if="!site.active">Not active</span>' +
                 '</div>' +
                 '<div class="site-element-description">{{site.description}}</div>' +
                 '<div class="site-element-url"><a target="_blank" v-bind:href="site.url">{{site.url}}</a></div>' +
