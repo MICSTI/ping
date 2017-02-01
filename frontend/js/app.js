@@ -2,7 +2,7 @@
  * Created by michael.stifter on 17.01.2017.
  */
 Vue.component('site-item', {
-    props: ['site'],
+    props: ['site', 'isLoggedIn'],
     methods: {
         getStatus: function(site) {
             return "status-" + site.status;
@@ -23,9 +23,12 @@ Vue.component('site-item', {
         }
     },
     template: '<li class="site-element">' +
-                // status
                 '<div class="site-element-status-container">' +
+                    // status indicator
                     '<span class="site-element-status-indicator" v-bind:class="getStatus(site)" v-bind:title="getStatusTitle(site)"></span>' +
+
+                    // maintenance mode switch
+                    '<span class="" v-if="isLoggedIn()">Switch it</span>' +
                 '</div>' +
 
                 '<div>' +

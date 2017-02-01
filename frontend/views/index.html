@@ -46,7 +46,7 @@
                 <div class="section-content">
                     <div v-if="!sitesLoading">
                         <ul v-if="sites.length > 0" class="sites-list">
-                            <site-item v-for="site in sites" v-bind:site="site"></site-item>
+                            <site-item v-for="site in sites" v-bind:site="site" :is-logged-in="isLoggedIn"></site-item>
                         </ul>
                         <div v-else>
                             There are no sites created yet.
