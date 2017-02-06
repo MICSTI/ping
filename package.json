@@ -29,6 +29,7 @@
     "jwt-simple": "0.5.1",
     "mocha": "3.2.0",
     "mongoose": "4.7.7",
+    "node-schedule": "^1.2.0",
     "nodemailer": "2.7.0",
     "os": "0.1.1",
     "serve-favicon": "2.3.2"
