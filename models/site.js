@@ -38,6 +38,9 @@ var Site = db.model('Site', {
     maintime: {
         type: Object
     },
+    lastChecked: {
+        type: Date
+    },
     config: {
         type: Object
     }
