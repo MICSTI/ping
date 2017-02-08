@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var logger = require('winston');
 
 // config files ====================================
 var DB;
@@ -17,10 +18,14 @@ mongoose.Promise = global.Promise;
 
 mongoose.connect(DB.url, function(err) {
     if (err) {
+        logger.error('Could not connect to MongoDB', {
+            error: err
+        });
+
         throw Error("Could not connect to MongoDB");
     }
 
-    console.log('MongoDB connected');
+    logger.info('MongoDB connected');
 });
 
 module.exports = mongoose;

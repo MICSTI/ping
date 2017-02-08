@@ -32,7 +32,9 @@
     "node-schedule": "^1.2.0",
     "nodemailer": "2.7.0",
     "os": "0.1.1",
-    "serve-favicon": "2.3.2"
+    "request": "^2.79.0",
+    "serve-favicon": "2.3.2",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "chai": "3.5.0",

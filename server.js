@@ -2,6 +2,8 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
+var logger = require('winston');
+
 var authentication = require('./controllers/authentication');
 var errorHandler = require('./controllers/error-handler');
 var favicon = require('serve-favicon');
@@ -56,7 +58,7 @@ app.use(errorHandler);
 app.listen(port);
 
 // console message
-console.log("ping started on port", port);
+logger.info("ping started on port %d", port);
 
 // expose app
 exports = module.exports = app;

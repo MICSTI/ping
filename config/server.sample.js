@@ -1,4 +1,7 @@
 module.exports = {
+    log: {
+        level: 'warn'
+    },
     port: 4242,
     secretKey: 'i am a super secret key',
     mail: {
