@@ -43,7 +43,10 @@ var Site = db.model('Site', {
     },
     config: {
         type: Object
-    }
+    },
+    configErrors: [{
+        type: String
+    }]
 });
 
 module.exports = Site;
