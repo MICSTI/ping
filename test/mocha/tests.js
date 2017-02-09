@@ -9,6 +9,7 @@ var expect = chai.expect;
 chai.use(chaiHttp);
 
 var Ping = require('../../controllers/ping');
+var ConfigChecker = require('../../controllers/check-site-config');
 
 // dummy test
 describe('dummy test', function() {
@@ -18,7 +19,7 @@ describe('dummy test', function() {
 });
 
 // ping result checker
-describe('ping', function() {
+describe('ping result checker', function() {
     beforeEach(function() {
         ping = new Ping();
     });
@@ -103,5 +104,87 @@ describe('ping', function() {
     it('correctly rejects an invalid regex', function() {
         expect(ping.result({ regex: "i am not cool" }, "1.2.0")).to.be.false;
         expect(ping.result.bind(undefined, { type: 'Number', regex: "^[0-9]+" }, "1.2.0")).to.throw(Error);
+    });
+});
+
+describe('site configuration checker', function() {
+    it('throws an error if no input is supplied', function() {
+        expect(ConfigChecker.checkConfig).to.throw(Error);
+    });
+
+    it('returns an array', function() {
+        expect(ConfigChecker.checkConfig({})).to.be.an.array;
+    });
+
+    it('critically warns about missing config object', function() {
+        expect(ConfigChecker.checkConfig({
+
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_CRITICAL, "Missing mandatory property 'config'"));
+    });
+
+    it('critically warns about missing request URL', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {}
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_CRITICAL, "Missing mandatory config property 'url'"));
+    });
+
+    it('warns about missing request method', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {}
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'type' for response type not set -> using default value 'json'"));
+    });
+
+    it('warns about missing response status', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {}
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'status' for response status not set -> using default value 200"));
+    });
+
+    it('warns about missing response type', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {}
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'type' for response type not set -> using default value 'json'"));
+    });
+
+    it('warns about empty request body for POST and PUT requests', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'post',
+                body: null
+            }
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'body' for request body not set in POST or PUT request method"));
+
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'PUT'
+            }
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'body' for request body not set in POST or PUT request method"));
+
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'GET',
+                body: null
+            }
+        })).to.not.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'body' for request body not set in POST or PUT request method"));
+    });
+
+    it('warns about non-empty request body for GET request', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'GET',
+                body: {
+                    foo: 'bar'
+                }
+            }
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'body' is set although request method is set to 'GET'"));
+
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'post',
+                body: {
+                    foo: 'bar'
+                }
+            }
+        })).to.not.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_WARNING, "Config property 'body' is set although request method is set to 'GET'"));
     });
 });
