@@ -24,8 +24,6 @@ var scheduleChecks = function() {
                 // TODO perform check for site (if lastChecked and set interval are ok)
 
                 // perform request
-                console.log('requesting', getRequestUrl(site));
-
                 request.get(getRequestUrl(site), function(error, response, body) {
                     if (error) {
                         // do something with error
