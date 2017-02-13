@@ -128,6 +128,20 @@ describe('site configuration checker', function() {
         })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_CRITICAL, "Missing mandatory config property 'url'"));
     });
 
+    it('critically warns about invalid request methods', function() {
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'click'
+            }
+        })).to.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_CRITICAL, "Invalid request method -> allowed options are: 'GET', 'POST', 'PUT' or 'DELETE'"));
+
+        expect(ConfigChecker.checkConfig({
+            config: {
+                method: 'delete'
+            }
+        })).to.not.deep.include(ConfigChecker.getMessageObject(ConfigChecker.LEVEL_CRITICAL, "Invalid request method -> allowed options are: 'GET', 'POST', 'PUT' or 'DELETE'"));
+    });
+
     it('warns about missing request method', function() {
         expect(ConfigChecker.checkConfig({
             config: {}

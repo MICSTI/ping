@@ -19,6 +19,10 @@ var checkConfig = function(site) {
             messages.push(getMessageObject(LEVEL_CRITICAL, "Missing mandatory config property 'url'"));
         }
 
+        if (typeof site.config.method === 'string' && ['GET', 'POST', 'PUT', 'DELETE'].indexOf(site.config.method.toLocaleUpperCase()) < 0) {
+            messages.push(getMessageObject(LEVEL_CRITICAL, "Invalid request method -> allowed options are: 'GET', 'POST', 'PUT' or 'DELETE'"));
+        }
+
         // check if request method is set
         if (!site.config.method) {
             messages.push(getMessageObject(LEVEL_WARNING, "Config property 'method' for request method not set -> using default value 'GET'"));
