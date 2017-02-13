@@ -24,7 +24,7 @@ var scheduleChecks = function() {
                 // TODO perform check for site (if lastChecked and set interval are ok)
 
                 // perform request
-                request.get(getRequestUrl(site), function(error, response, body) {
+                request[getRequestMethod(site)](getRequestUrl(site), function(error, response, body) {
                     if (error) {
                         // do something with error
                         return winston.info('Site %s reponded with an error', site.name, {
@@ -47,6 +47,11 @@ var scheduleChecks = function() {
     winston.info('Scheduled checks');
 };
 
+/**
+ * Returns the request URL for a site object.
+ * If the 'addRandomParameter' flag is set in the config.settings object, a request parameter 'randomPing'
+ * will be appended containing the value of a random number.
+ */
 var getRequestUrl = function(site) {
     if (site && site.config && site.config.settings && site.config.settings.addRandomParameter !== undefined) {
         var url = site.config.url;
@@ -62,6 +67,18 @@ var getRequestUrl = function(site) {
     }
 
     return site.config.url;
+};
+
+/**
+ * Returns the request method for a site object.
+ * Defaults to 'get'.
+ */
+var getRequestMethod = function(site) {
+    if (site && site.config && site.config.method && typeof site.config.method === 'string') {
+        return site.config.method.toLocaleLowerCase();
+    }
+
+    return 'get';
 };
 
 var checkSite = function(site) {
