@@ -24,7 +24,9 @@ var scheduleChecks = function() {
                 // TODO perform check for site (if lastChecked and set interval are ok)
 
                 // perform request
-                request.get(site.config.url, function(error, response, body) {
+                console.log('requesting', getRequestUrl(site));
+
+                request.get(getRequestUrl(site), function(error, response, body) {
                     if (error) {
                         // do something with error
                         return winston.info('Site %s reponded with an error', site.name, {
@@ -45,6 +47,23 @@ var scheduleChecks = function() {
     });
 
     winston.info('Scheduled checks');
+};
+
+var getRequestUrl = function(site) {
+    if (site && site.config && site.config.settings && site.config.settings.addRandomParameter !== undefined) {
+        var url = site.config.url;
+
+        if (site.config.settings.addRandomParameter === true) {
+            // check if there are already query params appended to the URL
+            if (url.indexOf('?') >= 0) {
+                return url + "&randomPing=" + Math.random();
+            } else {
+                return url + "?randomPing=" + Math.random();
+            }
+        }
+    }
+
+    return site.config.url;
 };
 
 var checkSite = function(site) {
